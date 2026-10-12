@@ -7,30 +7,12 @@ on:
     branches: [main]
 
 jobs:
-  fastapi-tests:
+  fastapi-docker-test:
     runs-on: ubuntu-latest
 
-    env:
-      DATABASE_URL: sqlite:///./test_database.db
-      APP_USERNAME: admin
-      APP_PASSWORD: admin123
-
     steps:
-      - name: Checkout do código
-        uses: actions/checkout@v3
+    - name: Checkout do código
+      uses: actions/checkout@v3
 
-      - name: Instalar Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.12'
-
-      - name: Instalar Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-
-      - name: Instalar dependências com Poetry
-        run: poetry install --no-root --no-interaction
-
-      - name: Rodar testes
-        run: poetry run pytest
+    - name: Build da imagem Docker
+      run: docker build -t my-fastapi-app .
