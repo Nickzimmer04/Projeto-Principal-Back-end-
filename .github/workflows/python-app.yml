@@ -24,7 +24,7 @@ jobs:
         run: pip install poetry
 
       - name: Instalar dependências
-        run: poetry install
+        run: poetry install --no-root
 
       - name: Executar testes
         run: poetry run pytest
