@@ -1,9 +1,16 @@
+
+import os
+
+os.environ["APP_USERNAME"] = "admin"
+os.environ["APP_PASSWORD"] = "admin123"
+os.environ.setdefault("DATABASE_URL", "sqlite:///./test.db")
+
 from fastapi.testclient import TestClient
 from main import app
-import os
 import pytest
 
 client = TestClient(app)
+
 
 os.environ["APP_USERNAME"] = "admin"
 os.environ["APP_PASSWORD"] = "admin123"
