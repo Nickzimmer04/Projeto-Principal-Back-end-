@@ -1,19 +1,21 @@
 
-name: FastAPI - Basic Check
+name: fastapi-docker-test
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
-  fastapi-docker-test:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout do código
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Instalar Python
         uses: actions/setup-python@v5
@@ -36,4 +38,17 @@ jobs:
         run: docker build -t my-fastapi-app .
 
       - name: Executar container Docker
-        run: docker run -d --name fastapi-test my-fastapi-app
+        run: |
+          docker run -d \
+            --name fastapi-test \
+            -p 8000:8000 \
+            -e DATABASE_URL=sqlite:///./test.db \
+            my-fastapi-app
+
+      - name: Validar inicialização do container
+        run: |
+          sleep 5
+          if [ "$(docker inspect -f '{{.State.Running}}' fastapi-test)" != "true" ]; then
+            docker logs fastapi-test
+            exit 1
+          fi
